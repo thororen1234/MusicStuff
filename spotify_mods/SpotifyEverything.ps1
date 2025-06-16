@@ -1,6 +1,6 @@
 # Download and execute Spicetify.ps1
 Write-Host "Downloading and executing Spicetify script."
-iwr -useb https://raw.githubusercontent.com/thororen1234/extra/refs/heads/main/Spicetify.ps1 | iex
+iwr -useb https://raw.githubusercontent.com/thororen1234/MusicStuff/refs/heads/main/spotify_mods/Spicetify.ps1 | iex
 
 Function Update-App {
     param (
@@ -128,7 +128,7 @@ spicetify apply
 # Install BlockTheSpot
 Write-Host "Installing BlockTheSpot."
 [Net.ServicePointManager]::SecurityProtocol = [Net.SecurityProtocolType]::Tls12
-Invoke-WebRequest -UseBasicParsing 'https://raw.githubusercontent.com/thororen1234/extra/refs/heads/main/BlockTheSpot.ps1' | Invoke-Expression
+Invoke-WebRequest -UseBasicParsing 'https://raw.githubusercontent.com/thororen1234/MusicStuff/refs/heads/main/spotify_mods/BlockTheSpot.ps1' | Invoke-Expression
 
 Write-Host "Script Finished."
 Pause
