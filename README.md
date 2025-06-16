@@ -2,6 +2,8 @@
 
 Cloning The Repo Contains:
 
+[Spotify Mods](https://github.com/thororen1234/MusicStuff/blob/main/spotify_mods)
+
 [Spotify To Tidal](https://github.com/spotify2tidal/spotify_to_tidal)
 
 [Spotify To YTMusic](https://github.com/linsomniac/spotify_to_ytmusic)
