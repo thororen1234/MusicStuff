@@ -1,6 +1,11 @@
 # Download and execute Spicetify.ps1
-Write-Host "Downloading and executing Spicetify script."
-iwr -useb https://raw.githubusercontent.com/thororen1234/MusicStuff/refs/heads/main/spotify_mods/Spicetify.ps1 | iex
+Write-Host "Installing Spicetify & Spicetify Marketplace."
+Write-Host "This script will ignore your input and forcibly install the marketplace."
+[Net.ServicePointManager]::SecurityProtocol = [Net.SecurityProtocolType]::Tls12
+$script = Invoke-WebRequest -UseBasicParsing -Uri "https://raw.githubusercontent.com/spicetify/cli/main/install.ps1"
+$content = $script.Content
+$content = $content -replace 'if\s*\(\$choice -eq 1\)', 'if ($false)'
+Invoke-Expression $content
 
 Function Update-App {
     param (
@@ -98,13 +103,13 @@ Update-App -AppName "visualizer" `
     -TargetFolder "visualizer"
 
 Update-App -AppName "stats" `
-    -DownloadUri "https://github.com/harbassan/spicetify-apps/releases/download/stats-v1.1.1/spicetify-stats.release.zip" `
+    -DownloadUri "https://github.com/harbassan/spicetify-apps/releases/download/stats-v1.1.2/spicetify-stats.release.zip" `
     -ArchiveName "stats.zip" `
     -ExtractFolder "stats" `
     -TargetFolder "stats"
 
 Update-App -AppName "library" `
-    -DownloadUri "https://github.com/harbassan/spicetify-apps/releases/download/library-v1.0.0/spicetify-library.release.zip" `
+    -DownloadUri "https://github.com/harbassan/spicetify-apps/releases/download/library-v1.1.0/spicetify-library.release.zip" `
     -ArchiveName "library.zip" `
     -ExtractFolder "library" `
     -TargetFolder "library"
@@ -125,10 +130,17 @@ Remove-Item -Recurse -Force "$env:APPDATA\spicetify\CustomApps\betterLibrary-mai
 Write-Host "Applying Spicetify configuration."
 spicetify apply
 
+if (Get-Process -Name "Spotify" -ErrorAction SilentlyContinue) {
+    Write-Host "Killing Spotify process for installation of BlockTheSpot."
+    Stop-Process -Name "Spotify" -Force
+    Write-Host "Waiting 5 seconds so BlockTheSpot's dpapi.dll isnt in use."
+    Start-Sleep -Seconds 5
+}
+
 # Install BlockTheSpot
 Write-Host "Installing BlockTheSpot."
 [Net.ServicePointManager]::SecurityProtocol = [Net.SecurityProtocolType]::Tls12
-Invoke-WebRequest -UseBasicParsing 'https://raw.githubusercontent.com/thororen1234/MusicStuff/refs/heads/main/spotify_mods/BlockTheSpot.ps1' | Invoke-Expression
+Invoke-WebRequest -UseBasicParsing 'https://raw.githubusercontent.com/mrpond/BlockTheSpot/master/install.ps1' | Invoke-Expression
 
 Write-Host "Script Finished."
 Pause
