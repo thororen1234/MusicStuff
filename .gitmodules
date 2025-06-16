@@ -1,6 +1,8 @@
 [submodule "spotify_to_ytmusic"]
 	path = spotify_to_ytmusic
 	url = https://github.com/linsomniac/spotify_to_ytmusic
+	ignore = dirty
 [submodule "spotify_to_tidal"]
 	path = spotify_to_tidal
 	url = https://github.com/spotify2tidal/spotify_to_tidal
+	ignore = dirty
