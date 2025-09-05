@@ -2,3 +2,4 @@ config.yml
 .cache*
 .session.yml
 raw_headers.txt
+processed*
