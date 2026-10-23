@@ -1,0 +1,7 @@
+# Copy this file to config.yml and fill in your Spotify app credentials.
+# Create an app at https://developer.spotify.com/dashboard and add the redirect_uri below to it.
+spotify:
+  client_id: your_client_id
+  client_secret: your_client_secret
+  redirect_uri: http://127.0.0.1:8888/callback
+  open_browser: True # Set to False if using a headless server environment

@@ -3,3 +3,6 @@ config.yml
 .session.yml
 raw_headers.txt
 processed*
+.match_cache.json
+__pycache__
+songs not found.txt

@@ -30,6 +30,12 @@ git submodule init
 git submodule update --remote
 ```
 
+### Scripts
+
+[Tidal To Spotify](https://github.com/thororen1234/MusicStuff/blob/main/tidal_to_spotify)
+
+[Tidal Favorites To Playlist](https://github.com/thororen1234/MusicStuff/blob/main/tidal_favorites_to_playlist)
+
 ### M3U
 
 [Spotify To M3U](https://github.com/TypNull/SpotifyToM3U) or [Spotify To M3U Web](https://lukasticky.gitlab.io/spotify-to-m3u)
