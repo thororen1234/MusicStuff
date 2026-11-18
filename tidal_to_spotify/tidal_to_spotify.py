@@ -106,18 +106,19 @@ def get_tidal_playlist_tracks(playlist: tidalapi.Playlist) -> List[tidalapi.Trac
         if not page:
             break
         tracks.extend(page)
-        offset += 100
+        offset += len(page)
     return tracks
 
 def get_tidal_favorite_tracks(session: tidalapi.Session) -> List[tidalapi.Track]:
     favorites = session.user.favorites
-    tracks, offset = [], 0
-    while True:
-        page = favorites.tracks(limit=100, offset=offset, order=ItemOrder.Date, order_direction=OrderDirection.Ascending)
+    total = favorites.get_tracks_count()
+    tracks = []
+    while len(tracks) < total:
+        page = favorites.tracks(limit=100, offset=len(tracks), order=ItemOrder.Date, order_direction=OrderDirection.Ascending)
+        if not page:
+            break
         tracks.extend(page)
-        if len(page) < 100:
-            return tracks
-        offset += 100
+    return tracks
 
 def describe(track: tidalapi.Track) -> str:
     artists = ", ".join(a.name for a in track.artists or [])
@@ -273,9 +274,13 @@ def sync_favorites(sp: spotipy.Spotify, tidal_session: tidalapi.Session, cache: 
     print(f"  Found {len(tracks)} favorite track(s) on Tidal.")
     if not tracks:
         return
-    uris = match_tracks(sp, tracks, cache, workers, "Favorites")
     print("  Loading Spotify Liked Songs…")
-    liked = {(it.get("item") or it.get("track"))["uri"] for it in get_all_pages(sp, sp._get("me/tracks", limit=50)) if it.get("item") or it.get("track")}
+    liked_items = [it.get("item") or it.get("track") for it in get_all_pages(sp, sp._get("me/tracks", limit=50))]
+    liked = {t["uri"] for t in liked_items if t}
+    liked_isrcs = {t.get("external_ids", {}).get("isrc", "").upper() for t in liked_items if t} - {""}
+    tracks = [t for t in tracks if not (t.isrc and t.isrc.upper() in liked_isrcs)]
+    print(f"  {len(liked)} song(s) already liked on Spotify, {len(tracks)} Tidal favorite(s) left to check.")
+    uris = match_tracks(sp, tracks, cache, workers, "Favorites")
     new_uris = [u for u in uris if u not in liked]
     if not new_uris:
         print("  Already up to date.")
@@ -283,7 +288,7 @@ def sync_favorites(sp: spotipy.Spotify, tidal_session: tidalapi.Session, cache: 
     # Oldest Tidal favorite is saved first so it ends up lowest in Liked Songs
     print(f"  Saving {len(new_uris)} track(s) to Liked Songs…")
     for i in tqdm(range(0, len(new_uris), 40), desc="  Saving"):
-        sp._put("me/library", payload={"uris": new_uris[i : i + 40]})
+        sp._put("me/library", uris=",".join(new_uris[i : i + 40]))
 
 def main():
     parser = argparse.ArgumentParser(description="Copy Tidal playlists and favorites to Spotify.")
